@@ -5,6 +5,7 @@ import csv
 
 parser = argparse.ArgumentParser(description='SignalFx - Custom Metrics Report Parser')
 parser.add_argument('-c', '--category', help='1 (Host), 2 (Container), 3 (Custom), 4 (Hi-Res), 5 (Bundled)', default='3')
+parser.add_argument('-l', '--limit', help='Limit no. of metrics displayed in table', default=10000)
 parser.add_argument('-r', '--report', help='Custom Metric Report', required=True)
 args = vars(parser.parse_args())
 
@@ -19,23 +20,30 @@ elif args['category'] == "4":
 elif args['category'] == "5":
     type = 'No. Bundled MTS'
 
-total = 0
-
 metrics_list = {}
 
-print "{:<80} {: >20}".format("\nSignalFx Metric (" + type + ")", "MTS")
-print "{:<80} {: >20}".format("---------------------------------------------", "-----")
+OKGREEN = '\033[92m'
+ENDC = '\033[0m'
+BOLD = '\033[1m'
+    
+print BOLD + OKGREEN + "{: <80} {: >21}".format("\nSignalFx Metric (" + type + ")", "MTS") + ENDC
+print BOLD + OKGREEN + "{: <80} {: >20}".format("-" * 80, "-" * 9) + ENDC
 
 with open(args['report']) as f:
     reader = csv.DictReader(f, delimiter='\t')
     for row in reader:
         if int(row[type]) != 0:
-            total = total + int(row[type])
             metrics_list[row['Metric Name']] = int(row[type])
 
-res = sorted(metrics_list.items(), key=lambda (k,v): v, reverse=True)
-for r in res:
-    print "{:<80} {: >20}".format(r[0], r[1])
+total = 0
 
-print "{:<80} {: >20}".format("---------------------------------------------", "-----")
-print "{:<80} {: >20}".format("Total MTS", total)
+res = sorted(metrics_list.items(), key=lambda (k,v): v, reverse=True)
+
+for r in res[:int(args['limit'])]:
+    mts = "{:,}".format(r[1])
+    print "{: <80} {: >20}".format(r[0], mts)
+    total = total + int(r[1])
+
+total = "{:,}".format(total)
+print BOLD + OKGREEN + "{: <80} {: >20}".format("-" * 80, "-" * 9) + ENDC
+print BOLD + OKGREEN + "{: <80} {: >20}".format("Total MTS", total) + ENDC
