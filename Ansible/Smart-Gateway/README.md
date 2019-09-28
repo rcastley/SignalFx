@@ -1,3 +1,5 @@
+Edit the `vars` section in `smartgateway.yml`
+
 ```
 ansible-playbook smartgateway.yml -i hosts -b
 
