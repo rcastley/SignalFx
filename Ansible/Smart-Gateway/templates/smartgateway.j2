@@ -1,6 +1,6 @@
 {
-  "ServerName": "{{ servername }}",
-  "ClusterName": "{{ clustername }}",
+  "ServerName": "{{ serverName }}",
+  "ClusterName": "{{ clusterName }}",
   "LogDir": "/var/lib/gateway/logs",
   "ListenFrom": [
     {
@@ -15,7 +15,7 @@
       "EventURL": "https://ingest.{{ realm }}.signalfx.com/v2/event",
       "TraceURL": "https://ingest.{{ realm }}.signalfx.com/v1/trace",
       "DefaultAuthToken": "{{ token }}",
-      "Name": "{{ smartgateway-name }}",
+      "Name": "{{ smartatewayName }}",
       "TraceSample": {
         "BackupLocation": "/var/lib/gateway/data"
       }
