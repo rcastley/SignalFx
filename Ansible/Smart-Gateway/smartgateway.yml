@@ -1,10 +1,10 @@
 - hosts: ubuntu
   vars:
-    realm: us0
+    realm: YOUR_SFX_REALM
     serverName: YOUR_SERVER_NAME
     clusterName: YOUR_CLUSTER_NAME
     smartatewayName: YOUR_SMARTGATEWAY_NAME
-    token: YOUR_TOKEN
+    token: YOUR_SFX_TOKEN
   tasks:
   - name: Download SmartGateway 
     get_url:
