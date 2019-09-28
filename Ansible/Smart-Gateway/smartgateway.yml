@@ -1,10 +1,10 @@
 - hosts: ubuntu
   vars:
     realm: us0
-    servername: YOUR_SERVER_NAME
-    clustername: YOUR_CLUSTER_NAME
-    name: smart-gateway-forwarder
-    token: YOUR_TOKEN
+    servername: plex
+    clustername: prod
+    smartgateway-name: smart-gateway-forwarder
+    token: Yl_utY2wIV8sfCCsekTHhA
   tasks:
   - name: Download SmartGateway 
     get_url:
@@ -31,6 +31,6 @@
 
   - name: Create SmartGateway configuration file
     template:
-      src: smartgateway.j2
+      src: smart-gateway.j2
       dest: /var/lib/gateway/etc/gateway.conf
       
