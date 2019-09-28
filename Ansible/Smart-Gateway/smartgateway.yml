@@ -1,10 +1,10 @@
 - hosts: ubuntu
   vars:
     realm: us0
-    servername: plex
-    clustername: prod
-    smartgateway-name: smart-gateway-forwarder
-    token: Yl_utY2wIV8sfCCsekTHhA
+    serverName: YOUR_SERVER_NAME
+    clusterName: YOUR_CLUSTER_NAME
+    smartatewayName: YOUR_SMARTGATEWAY_NAME
+    token: YOUR_TOKEN
   tasks:
   - name: Download SmartGateway 
     get_url:
