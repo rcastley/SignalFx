@@ -1,0 +1,36 @@
+- hosts: ubuntu
+  vars:
+    realm: us0
+    servername: YOUR_SERVER_NAME
+    clustername: YOUR_CLUSTER_NAME
+    name: smart-gateway-forwarder
+    token: YOUR_TOKEN
+  tasks:
+  - name: Download SmartGateway 
+    get_url:
+      url: https://app.{{ realm }}.signalfx.com/v2/smart-gateway/download/v2.0.4
+      dest: /tmp/smart-gateway.gz
+      headers:
+        X-SF-Token: "{{ token }}"
+      mode: '0755'
+ 
+  - name: Unzip SmartGateway
+    command: gunzip /tmp/smart-gateway.gz
+
+  - name: Move SmartGateway binary
+    command: mv /tmp/smart-gateway /usr/local/bin
+  
+  - name: Create Smart-Gateway directories
+    file:
+      path: "{{ item }}"
+      state: directory
+    with_items:
+      - /var/lib/gateway/etc
+      - /var/lib/gateway/logs
+      - /var/lib/gateway/data
+
+  - name: Create SmartGateway configuration file
+    template:
+      src: smart-gateway.j2
+      dest: /var/lib/gateway/etc/gateway.conf
+      
