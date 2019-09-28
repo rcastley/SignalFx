@@ -31,6 +31,6 @@
 
   - name: Create SmartGateway configuration file
     template:
-      src: smart-gateway.j2
+      src: smartgateway.j2
       dest: /var/lib/gateway/etc/gateway.conf
       
