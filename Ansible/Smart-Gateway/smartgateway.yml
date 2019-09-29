@@ -3,7 +3,7 @@
     realm: YOUR_SFX_REALM
     serverName: YOUR_SERVER_NAME
     clusterName: YOUR_CLUSTER_NAME
-    smartatewayName: YOUR_SMARTGATEWAY_NAME
+    smartgatewayName: YOUR_SMARTGATEWAY_NAME
     token: YOUR_SFX_TOKEN
   tasks:
   - name: Download SmartGateway 
@@ -31,6 +31,6 @@
 
   - name: Create SmartGateway configuration file
     template:
-      src: smart-gateway.j2
+      src: smartgateway.j2
       dest: /var/lib/gateway/etc/gateway.conf
       
