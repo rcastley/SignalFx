@@ -33,4 +33,3 @@
     template:
       src: smartgateway.j2
       dest: /var/lib/gateway/etc/gateway.conf
-      
