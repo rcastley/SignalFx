@@ -22,7 +22,7 @@
     command: cp /tmp/smart-gateway /usr/local/bin
     when: smartgateway_downloaded['changed'] == true
 
-  - name: Create Smart-Gateway directories
+  - name: Create SmartGateway directories
     file:
       path: "{{ item }}"
       state: directory
