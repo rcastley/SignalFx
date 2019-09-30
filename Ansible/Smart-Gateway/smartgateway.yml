@@ -12,13 +12,16 @@
       headers:
         X-SF-Token: "{{ token }}"
       mode: '0755'
- 
+    register: smartgateway_downloaded
+
   - name: Unzip SmartGateway
     command: gunzip /tmp/smart-gateway.gz
+    when: smartgateway_downloaded['changed'] == true
 
   - name: Move SmartGateway binary
-    command: mv /tmp/smart-gateway /usr/local/bin
-  
+    command: cp /tmp/smart-gateway /usr/local/bin
+    when: smartgateway_downloaded['changed'] == true
+
   - name: Create Smart-Gateway directories
     file:
       path: "{{ item }}"
@@ -27,6 +30,7 @@
       - /var/lib/gateway/etc
       - /var/lib/gateway/logs
       - /var/lib/gateway/data
+    when: smartgateway_downloaded['changed'] == true
 
   - name: Create SmartGateway configuration file
     template:
