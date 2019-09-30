@@ -3,7 +3,6 @@
     realm: YOUR_SFX_REALM
     serverName: YOUR_SERVER_NAME
     clusterName: YOUR_CLUSTER_NAME
-    smartgatewayName: YOUR_SMARTGATEWAY_NAME
     token: YOUR_SFX_TOKEN
   tasks:
   - name: Download SmartGateway 
