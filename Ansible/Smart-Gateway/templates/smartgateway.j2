@@ -1,23 +1,23 @@
 {
-  "ServerName": "{{ serverName }}",
-  "ClusterName": "{{ clusterName }}",
-  "LogDir": "/var/lib/gateway/logs",
-  "ListenFrom": [
+  "ServerName":"{{ serverName }}",
+  "ClusterName":"{{ clusterName }}",
+  "LogDir":"/var/lib/gateway/logs",
+  "ListenFrom":[
     {
-      "Type": "signalfx",
-      "ListenAddr": "0.0.0.0:8080"
+      "Type":"signalfx",
+      "ListenAddr":"0.0.0.0:8080"
     }
   ],
-  "ForwardTo": [
+  "ForwardTo":[
     {
-      "Type": "signalfx",
-      "URL": "https://ingest.{{ realm }}.signalfx.com/v2/datapoint",
-      "EventURL": "https://ingest.{{ realm }}.signalfx.com/v2/event",
-      "TraceURL": "https://ingest.{{ realm }}.signalfx.com/v1/trace",
-      "DefaultAuthToken": "{{ token }}",
-      "Name": "smart-gateway-forwarder",
-      "TraceSample": {
-        "BackupLocation": "/var/lib/gateway/data"
+      "Type":"signalfx",
+      "URL":"https://ingest.{{ realm }}.signalfx.com/v2/datapoint",
+      "EventURL":"https://ingest.{{ realm }}.signalfx.com/v2/event",
+      "TraceURL":"https://ingest.{{ realm }}.signalfx.com/v1/trace",
+      "DefaultAuthToken":"{{ token }}",
+      "Name":"smart-gateway-forwarder",
+      "TraceSample":{
+        "BackupLocation":"/var/lib/gateway/data"
       }
     }
   ]
