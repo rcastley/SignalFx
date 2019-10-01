@@ -4,22 +4,23 @@
     serverName: YOUR_SERVER_NAME
     clusterName: YOUR_CLUSTER_NAME
     token: YOUR_SFX_TOKEN
+    version: "v2.0.4"
   tasks:
   - name: Download SmartGateway 
     get_url:
-      url: https://app.{{ realm }}.signalfx.com/v2/smart-gateway/download/v2.0.4
-      dest: /tmp/smart-gateway.gz
+      url: https://app.{{ realm }}.signalfx.com/v2/smart-gateway/download/{{ version }}
+      dest: /tmp/smart-gateway-{{ version }}.gz
       headers:
         X-SF-Token: "{{ token }}"
-      mode: '0755'
+      mode: "0755"
     register: smartgateway_downloaded
 
   - name: Unzip SmartGateway
-    command: gunzip /tmp/smart-gateway.gz
+    command: gunzip /tmp/smart-gateway-{{ version }}.gz
     when: smartgateway_downloaded['changed'] == true
 
   - name: Copy SmartGateway binary to /usr/local/bin
-    command: cp /tmp/smart-gateway /usr/local/bin
+    command: cp /tmp/smart-gateway-{{ version }} /usr/local/bin/smart-gateway
     when: smartgateway_downloaded['changed'] == true
 
   - name: Create SmartGateway directories
