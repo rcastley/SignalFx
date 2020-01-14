@@ -26,6 +26,7 @@ cat << EOF > /var/lib/gateway/etc/gateway.conf
 {
   "ServerName": "$HOSTNAME",
   "ClusterName": "$CLUSTERNAME",
+  "EmitDebugMetrics": true,
   "StatsDelay": "10s",
   "LogDir": "/var/lib/gateway/logs",
   "ListenFrom": [
