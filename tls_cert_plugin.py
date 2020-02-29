@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 def ssl_expiry_datetime(hostname):
     ssl_date_fmt = r'%b %d %H:%M:%S %Y %Z'
 
-    context = ssl.create_default_context(cafile='/etc/signalfx/cacerts.pem')
+    context = ssl.create_default_context(cafile='/etc/signalfx/cacert.pem')
     conn = context.wrap_socket(
         socket.socket(socket.AF_INET),
         server_hostname=hostname,
