@@ -2,11 +2,14 @@
 
 # Returns the number of days remaining for the certificate on the give domain(s)
 
+# Fetch latest CA certs
+# sudo curl -O https://curl.haxx.se/ca/cacert.pem -o /etc/signalfx/cacert.pem
+
 # Example configuration:
 
 # - type: python-monitor
 #   scriptFilePath: "/usr/local/scripts/tls.py"
-#   domains: ["signalfx.com", "github.com", "google.com"]
+#   domains: ["splunk.com", "github.com", "google.com"]
 
 import datetime
 import socket
@@ -18,7 +21,7 @@ logger = logging.getLogger(__name__)
 def ssl_expiry_datetime(hostname):
     ssl_date_fmt = r'%b %d %H:%M:%S %Y %Z'
 
-    context = ssl.create_default_context()
+    context = ssl.create_default_context(cafile='/etc/signalfx/cacerts.pem')
     conn = context.wrap_socket(
         socket.socket(socket.AF_INET),
         server_hostname=hostname,
