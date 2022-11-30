@@ -3,7 +3,7 @@ data:
   relay: |
     exporters:
       signalfx:
-        access_token: <REDACTED>
+        access_token: 4yEgrkwC5d1wjQXoXVjhgw
         api_url: https://api.us1.signalfx.com
         correlation: null
         ingest_url: https://ingest.us1.signalfx.com
@@ -33,12 +33,10 @@ data:
           - container.id
           - container.image.name
           - container.image.tag
+          - k8s.cluster.name
         filter:
           node_from_env_var: K8S_NODE_NAME
         pod_association:
-        - sources:
-          - from: resource_attribute
-            name: k8s.pod.uid
         - sources:
           - from: resource_attribute
             name: k8s.pod.ip
@@ -47,6 +45,7 @@ data:
             name: ip
         - sources:
           - from: connection
+            name: ip
         - sources:
           - from: resource_attribute
             name: host.name
@@ -55,9 +54,6 @@ data:
         limit_mib: 500
       resource:
         attributes:
-        - action: insert
-          key: k8s.node.name
-          value: ${K8S_NODE_NAME}
         - action: upsert
           key: k8s.cluster.name
           value: splunk-k3s-cluster
@@ -92,8 +88,8 @@ data:
           processes: null
       k8s_cluster:
         collection_interval: 10s
-        node_conditions_to_report: [Ready, MemoryPressure,DiskPressure,NetworkUnavailable]
-        allocatable_types_to_report: [cpu, memory,storage]
+        node_conditions_to_report: [Ready, MemoryPressure, DiskPressure, NetworkUnavailable]
+        allocatable_types_to_report: [cpu, memory, storage]
       otlp:
         protocols:
           grpc:
