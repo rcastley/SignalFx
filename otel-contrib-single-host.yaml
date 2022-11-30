@@ -63,13 +63,6 @@ exporters:
 service:
   extensions: [health_check, http_forwarder, zpages, memory_ballast]
   pipelines:
-    traces:
-      receivers: [jaeger, otlp, zipkin]
-      processors:
-      - memory_limiter
-      - batch
-      - resourcedetection
-      exporters: [signalfx]
     metrics:
       receivers: [hostmetrics, otlp, signalfx]
       processors: [memory_limiter, batch, resourcedetection]
