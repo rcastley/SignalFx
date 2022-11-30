@@ -1,0 +1,169 @@
+apiVersion: v1
+data:
+  relay: |
+    exporters:
+      signalfx:
+        access_token: <REDACTED>
+        api_url: https://api.us1.signalfx.com
+        correlation: null
+        ingest_url: https://ingest.us1.signalfx.com
+        sync_host_metadata: true
+    extensions:
+      health_check: null
+      k8s_observer:
+        auth_type: serviceAccount
+        node: ${K8S_NODE_NAME}
+        observe_pods: true
+        observe_nodes: true
+      memory_ballast:
+        size_mib: 500
+      zpages: null
+    processors:
+      batch: null
+      k8sattributes:
+        auth_type: "serviceAccount"
+        passthrough: false
+        extract:
+          metadata:
+          - k8s.deployment.name
+          - k8s.namespace.name
+          - k8s.node.name
+          - k8s.pod.name
+          - k8s.pod.uid
+          - container.id
+          - container.image.name
+          - container.image.tag
+        filter:
+          node_from_env_var: K8S_NODE_NAME
+        pod_association:
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.ip
+        - sources:
+          - from: resource_attribute
+            name: ip
+        - sources:
+          - from: connection
+        - sources:
+          - from: resource_attribute
+            name: host.name
+      memory_limiter:
+        check_interval: 2s
+        limit_mib: 500
+      resource:
+        attributes:
+        - action: insert
+          key: k8s.node.name
+          value: ${K8S_NODE_NAME}
+        - action: upsert
+          key: k8s.cluster.name
+          value: splunk-k3s-cluster
+      resource/add_agent_k8s:
+        attributes:
+        - action: insert
+          key: k8s.pod.name
+          value: ${K8S_POD_NAME}
+        - action: insert
+          key: k8s.pod.uid
+          value: ${K8S_POD_UID}
+        - action: insert
+          key: k8s.namespace.name
+          value: ${K8S_NAMESPACE}
+      resourcedetection:
+        detectors:
+        - env
+        - system
+        override: true
+        timeout: 10s
+    receivers:
+      hostmetrics:
+        collection_interval: 10s
+        scrapers:
+          cpu: null
+          disk: null
+          filesystem: null
+          load: null
+          memory: null
+          network: null
+          paging: null
+          processes: null
+      k8s_cluster:
+        collection_interval: 10s
+        node_conditions_to_report: [Ready, MemoryPressure,DiskPressure,NetworkUnavailable]
+        allocatable_types_to_report: [cpu, memory,storage]
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      prometheus/agent:
+        config:
+          scrape_configs:
+          - job_name: otel-agent
+            scrape_interval: 10s
+            static_configs:
+            - targets:
+              - ${K8S_POD_IP}:8889
+      receiver_creator:
+        receivers:
+          kubeletstats:
+            rule: type == "k8s.node"
+            config:
+              auth_type: serviceAccount
+              collection_interval: 10s
+              endpoint: "`endpoint`:`kubelet_endpoint_port`"
+              insecure_skip_verify: true
+              extra_metadata_labels:
+                - container.id
+                - k8s.volume.type
+              metric_groups:
+                - container
+                - pod
+                - node
+                - volume
+        watch_observers: [k8s_observer]
+      signalfx:
+        endpoint: 0.0.0.0:9943
+    service:
+      extensions:
+      - health_check
+      - k8s_observer
+      - memory_ballast
+      - zpages
+      pipelines:
+        metrics:
+          exporters:
+          - signalfx
+          processors:
+          - memory_limiter
+          - batch
+          - resourcedetection
+          - resource
+          - k8sattributes
+          - resource/add_agent_k8s
+          receivers:
+          - k8s_cluster
+          - hostmetrics
+          - otlp
+          - receiver_creator
+          - signalfx
+      telemetry:
+        metrics:
+          address: 0.0.0.0:8889
+kind: ConfigMap
+metadata:
+  annotations:
+    meta.helm.sh/release-name: opentelemetry-collector
+    meta.helm.sh/release-namespace: default
+  labels:
+    app.kubernetes.io/instance: opentelemetry-collector
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/version: 0.66.0
+    helm.sh/chart: opentelemetry-collector-0.40.2
+  name: opentelemetry-collector-agent
+  namespace: default
