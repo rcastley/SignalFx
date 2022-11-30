@@ -98,7 +98,7 @@ processors:
 exporters:
   # Metrics + Events
   signalfx:
-    access_token: "4yEgrkwC5d1wjQXoXVjhgw"
+    access_token: "<REDACTED>"
     api_url: "https://api.us1.signalfx.com"
     ingest_url: "https://ingest.us1.signalfx.com"
     sync_host_metadata: true
