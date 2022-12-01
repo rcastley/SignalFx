@@ -3,7 +3,7 @@ data:
   relay: |
     exporters:
       signalfx:
-        access_token: <REDACTED>
+        access_token: <REDCATED>
         api_url: https://api.us1.signalfx.com
         correlation: null
         ingest_url: https://ingest.us1.signalfx.com
@@ -23,8 +23,8 @@ data:
     processors:
       batch: null
       k8sattributes:
-        #auth_type: "serviceAccount"
-        auth_type: "kubeConfig"
+        auth_type: "serviceAccount"
+        #auth_type: "kubeConfig"
         passthrough: false
         extract:
           metadata:
@@ -35,7 +35,7 @@ data:
           - k8s.pod.uid
           - k8s.pod.start_time
         filter:
-          node_from_env_var: K8S_NODE_NAME
+          node_from_env_var: KUBE_NODE_NAME
         pod_association:
         - sources:
           - from: resource_attribute
@@ -80,8 +80,8 @@ data:
         scrapers:
           cpu: null
           disk: null
-          filesystem: null
           load: null
+          filesystem: null
           memory: null
           network: null
           paging: null
