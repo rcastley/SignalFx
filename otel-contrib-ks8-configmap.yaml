@@ -3,11 +3,13 @@ data:
   relay: |
     exporters:
       signalfx:
-        access_token: <REDACTED>
+        access_token: 4yEgrkwC5d1wjQXoXVjhgw
         api_url: https://api.us1.signalfx.com
         correlation: null
         ingest_url: https://ingest.us1.signalfx.com
         sync_host_metadata: true
+      logging:
+        loglevel: debug
     extensions:
       health_check: null
       k8s_observer:
@@ -21,7 +23,8 @@ data:
     processors:
       batch: null
       k8sattributes:
-        auth_type: "serviceAccount"
+        #auth_type: "serviceAccount"
+        auth_type: "kubeConfig"
         passthrough: false
         extract:
           metadata:
@@ -30,10 +33,7 @@ data:
           - k8s.node.name
           - k8s.pod.name
           - k8s.pod.uid
-          - container.id
-          - container.image.name
-          - container.image.tag
-          - k8s.cluster.name
+          - k8s.pod.start_time
         filter:
           node_from_env_var: K8S_NODE_NAME
         pod_association:
@@ -42,7 +42,7 @@ data:
             name: k8s.pod.ip
         - sources:
           - from: resource_attribute
-            name: ip
+            name: k8s.pod.uid
         - sources:
           - from: connection
             name: ip
@@ -59,15 +59,15 @@ data:
           value: splunk-k3s-cluster
       resource/add_agent_k8s:
         attributes:
-        - action: insert
-          key: k8s.pod.name
-          value: ${K8S_POD_NAME}
-        - action: insert
-          key: k8s.pod.uid
-          value: ${K8S_POD_UID}
-        - action: insert
-          key: k8s.namespace.name
-          value: ${K8S_NAMESPACE}
+          - action: insert
+            key: k8s.pod.name
+            value: ${K8S_POD_NAME}
+          - action: insert
+            key: k8s.pod.uid
+            value: ${K8S_POD_UID}
+          - action: insert
+            key: k8s.namespace.name
+            value: ${K8S_NAMESPACE}
       resourcedetection:
         detectors:
         - env
@@ -88,8 +88,9 @@ data:
           processes: null
       k8s_cluster:
         collection_interval: 10s
-        node_conditions_to_report: [Ready, MemoryPressure, DiskPressure, NetworkUnavailable]
-        allocatable_types_to_report: [cpu, memory, storage]
+        node_conditions_to_report: [Ready, MemoryPressure, DiskPressure, PIDPressure, NetworkUnavailable]
+        allocatable_types_to_report: [cpu, memory, storage, ephemeral-storage]
+        metadata_exporters: [signalfx]
       otlp:
         protocols:
           grpc:
@@ -134,6 +135,7 @@ data:
         metrics:
           exporters:
           - signalfx
+          - logging
           processors:
           - memory_limiter
           - batch
